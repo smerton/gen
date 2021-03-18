@@ -3,6 +3,7 @@
 // Author S. R. Merton
 
 #include <iostream>
+#include "input.h"
 
 using namespace std;
 
@@ -12,6 +13,10 @@ using namespace std;
 int main(){
 
   cout<<"main(): Starting up main loop..."<<endl;
+
+// initialise a new input from file
+
+  Input I((char*)"input.gen");
 
   cout<<"Normal termination."<<endl;
 
