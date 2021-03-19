@@ -5,8 +5,9 @@
 #include <iostream>
 #include "input.h"
 
-using namespace std;
+void Output(char*s,Input*I);
 
+using namespace std;
 
 // main function starts here
 
@@ -17,6 +18,10 @@ int main(){
 // initialise a new input from file
 
   Input I((char*)"input.gen");
+
+// write the mesh file
+
+  Output((char*) "input.mesh",&I);
 
   cout<<"Normal termination."<<endl;
 

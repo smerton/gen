@@ -1,6 +1,6 @@
 SHELL=/bin/sh
 
-OBJECTS=input.o main.o
+OBJECTS=input.o output.o main.o
 MYFLAGS=-g -O2 -Wall -v -std=c++11 -pthread
 MYCMP=g++
 MYINCS=

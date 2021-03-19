@@ -31,7 +31,7 @@ class Input{
     int Pt(); // returns the polyhedral order of the thermodynamic element
     int NMaterials(); // returns the number of materials
     int Material(int imat); // returns material number of material imat
-    bool Ambient(int imat); // returns ambience of material imat
+    int Ambient(); // returns ambient material number
     double Density(int imat); // returns density of material imat
     double Pressure(int imat); // returns pressure in material imat
     double Velocity(int idim,int imat); // returns velocity in direction idim of material imat
@@ -56,7 +56,7 @@ class Input{
     int mPk;               // polyhedral order for kinematics
     int mPt;               // polyhedral order for thermodynamics
     vector<int> mMaterial; // material number
-    vector<bool> mAmbient; // flags a material as ambient
+    int mAmbient=1;        // ambient material
     vector<double> mDensity;     // density of material
     vector<double> mPressure;    // pressure of material
     vector<double> mVelocity[3]; // velocity of material
