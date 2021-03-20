@@ -112,6 +112,8 @@ Input::Input(char* inputfile){
     double Input::Pressure(int imat){return mPressure[imat];} // returns pressure in material imat
     double Input::Velocity(int idim,int imat){return mVelocity[idim][imat];} // returns velocity in direction idim of m
     double Input::Range(int idim,int imat){return mRange[idim][imat];} // return range idim of material imat
+//    int Input::NDims(){return mNodes.size_of();} // return number of mesh dimensions
+    int Input::NDims(){return 3;} // return number of mesh dimensions
 
 // Destructor function to release storage associated with an input class object
 
