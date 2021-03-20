@@ -11,7 +11,7 @@ using namespace std;
 
 void Output(char* outputfile,Input*I){
 
-  cout<<"Output(): Writing input pipeline to file "<<outputfile<<endl;
+  cout<<"Output(): Writing input pipeline to meshfile "<<outputfile<<endl;
 
 // write the input pipeline
 
