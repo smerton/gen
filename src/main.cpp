@@ -5,13 +5,16 @@
 #include <iostream>
 #include "input.h"
 
-void Output(char*s,Input*I);
+void Output(char*s,Input*I); // RhoLo/MFEM format
+void Output_old(char*s,Input*I); // old output format
 
 using namespace std;
 
 // main function starts here
 
 int main(int argc, char** argv){
+
+  bool new_format(true);
 
   if(argc!=3){
     cout<<"main(): please specify an input file and an output file."<<endl;
@@ -29,7 +32,19 @@ int main(int argc, char** argv){
 
 // write the mesh file
 
-  Output((char*) argv[2],&I);
+  if(new_format){
+
+// new format for RhoLo/MFEM
+
+    Output((char*) argv[2],&I);
+
+  }else{
+
+// old format for backward compatibility with ToyALE
+
+    Output_old((char*) argv[2],&I);
+
+  }
 
   cout<<"Normal termination."<<endl;
 

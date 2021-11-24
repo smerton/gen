@@ -26,7 +26,7 @@ Input::Input(char* inputfile){
     cout<<"Input::Input(): input string= "<<mKeyword<<endl;
     if(mKeyword.compare("Title")==0){getline(file,mTitle);}
     if(mKeyword.compare("Description")==0){getline(file,mbuffer);mDescription.push_back(mbuffer);}
-    if(mKeyword.compare("Nodes")==0){file>>mNodes[0]>>mNodes[1]>>mNodes[2];}
+    if(mKeyword.compare("Nodes")==0){file>>mNodes[0]>>mNodes[1]>>mNodes[2];mNCells=(mNodes[0]-1)*(mNodes[1]-1);}
     if(mKeyword.compare("Domain")==0){file>>mKeyword>>mXMin>>mXMax>>mKeyword>>mYMin>>mYMax>>mKeyword>>mZMin>>mZMax;}
     if(mKeyword.compare("Boundaries")==0){for(int i=0;i<6;i++){file>>mBoundaries[i];}}
     if(mKeyword.compare("Pk")==0){file>>mPk;}
@@ -114,6 +114,7 @@ Input::Input(char* inputfile){
     double Input::Range(int idim,int imat){return mRange[idim][imat];} // return range idim of material imat
 //    int Input::NDims(){return mNodes.size_of();} // return number of mesh dimensions
     int Input::NDims(){return 3;} // return number of mesh dimensions
+    int Input::NCells(){return mNCells;} // return number of cells in the mesh
 
 // Destructor function to release storage associated with an input class object
 

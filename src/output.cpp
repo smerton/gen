@@ -6,12 +6,169 @@
 #include "input.h"
 #include <fstream>
 #include <iomanip>
+#include <ctime>     // date and time
+#include <stdlib.h>  // getenv
+#include <unistd.h> // gethostname
 
 using namespace std;
+
+string gethost();
+string date(){time_t now = time(0);return ctime(&now);} // function to return the date and time
 
 void Output(char* outputfile,Input*I){
 
   cout<<"Output(): Writing input pipeline to meshfile "<<outputfile<<endl;
+
+// write the input pipeline
+
+  ofstream file(outputfile);
+
+  file<<"# MFEM mesh v1.0"<<endl;
+  file<<"#"<<endl;
+  file<<"#"<<I->Title()<<endl;
+
+  for(int i=0;i<I->NDescriptions();i++){
+    file<<"#"<<I->Description(i)<<endl;
+  }
+
+// write header
+
+  file<<"#"<<endl;
+  file<<"# Input file for RhoLo based on MFEM mesh file format"<<endl;
+  file<<"# This file was created by gen on "<<date();
+  file<<"# and can be visualised using GLVis"<<endl;
+  file<<"# See https://mfem.org/mesh-format-v1.x for description of this format"<<endl;
+  file<<"#"<<endl;
+  file<<"# Stamp revealed the following header information:"<<endl;
+  file<<"#     User: "<<getenv("USER")<<endl;
+  file<<"#     Host: "<<gethost()<<endl;
+  file<<"#     Home: "<<getenv("HOME")<<endl;
+  file<<"#     pwd:  "<<getenv("PWD")<<endl;
+  file<<"#"<<endl;
+  file<<"# RhoLo uses the following which may be inconsistent with MFEM:"<<endl;
+  file<<"#   element attribute for material number (column 1 in elements block)"<<endl;
+  file<<"#   boundary attribute for mesh side, =0 for bottom, 1 for right, =2 for top, =3 for left (column 1 in boundary block)"<<endl;
+  file<<"#   boundary type not used - it is not known what MFEM uses this for (column 2 in boundary block)"<<endl;
+  file<<"#   FiniteElementCollection not used - but MFEM may use this to set polyhedral order (in nodes block)"<<endl;
+  file<<"#"<<endl;
+  file<<"# The following format is interpreted by RhoLo"<<endl;
+  file<<"# dimension"<<endl;
+  file<<"# <number of spatial dimensions of the mesh>"<<endl;
+  file<<"#"<<endl;
+  file<<"# elements"<<endl;
+  file<<"# <number of elements>"<<endl;
+  file<<"# <material number> <element type from MFEM geometry type list, see below> <node number of vertices>"<<endl;
+  file<<"#"<<endl;
+  file<<"# boundary"<<endl;
+  file<<"# <number of element sides on the mesh boundary>"<<endl;
+  file<<"# <element side coincident with mesh edge> <boundary condition, 1=free surface, 2= forced-reflective> <node number of vertices on this side>"<<endl;
+  file<<"#"<<endl;
+  file<<"# vertices"<<endl;
+  file<<"# <number of mesh vertices>"<<endl;
+  file<<"# <serialisation, =2 for x,y pairs>"<<endl;
+  file<<"# <coordinate of vertex in each dimension>"<<endl;
+  file<<"#"<<endl;
+  file<<"#"<<endl;
+  file<<"# MFEM Geometry Types (see mesh/geom.hpp):"<<endl;
+  file<<"#"<<endl;
+  file<<"# POINT       = 0"<<endl;
+  file<<"# SEGMENT     = 1"<<endl;
+  file<<"# TRIANGLE    = 2"<<endl;
+  file<<"# SQUARE      = 3"<<endl;
+  file<<"# TETRAHEDRON = 4"<<endl;
+  file<<"# CUBE        = 5"<<endl;
+  file<<"# PRISM       = 6"<<endl;
+  file<<"#"<<endl;
+  file<<endl;
+
+  file<<"dimension"<<endl;
+  file<<I->NDims()-1<<endl;
+  file<<endl;
+
+  int nx(I->Nodes(0)),ny(I->Nodes(1));
+  int ncellsx(nx-1),ncellsy(ny-1);
+
+// set up vertices
+
+  double vx[nx*ny],vy[nx*ny];
+  double dx((I->XMax()-I->XMin())/ncellsx);
+  double dy((I->YMax()-I->YMin())/ncellsy);
+
+  for(int j=0,k=0;j<ny;j++){
+    for(int i=0;i<nx;i++,k++){
+      vx[k]=I->XMin()+i*dx;
+      vy[k]=I->YMin()+j*dy;
+    }
+  }
+
+// write elements block
+
+  file<<"elements"<<endl;
+  file<<I->NCells()<<endl;
+
+  for(int j=0;j<ncellsy;j++){
+    for(int i=0;i<ncellsx;i++){
+
+// corner nodes
+
+      int i1(j*nx+i),i2(j*nx+i+1),i3((j+1)*nx+i),i4((j+1)*nx+i+1);
+
+// calculate centroid
+
+      double xc[2];
+      xc[0]=0.25*(vx[i1]+vx[i2]+vx[i3]+vx[i4]);
+      xc[1]=0.25*(vy[i1]+vy[i2]+vy[i3]+vy[i4]);
+
+// assign material to element
+
+      int mat;
+      for(int imat=0;imat<I->NMaterials();imat++){
+        if((xc[0]>I->Range(0,imat)&&xc[0]<I->Range(1,imat))&&(xc[1]>I->Range(2,imat)&&xc[1]<I->Range(3,imat))){
+          mat=I->Material(imat);
+          break;
+        }
+      }
+
+      file<<mat<<" 3 "<<i1<<" "<<i2<<" "<<i4<<" "<<i3<<" "<<xc[0]<<" "<<endl;
+
+    }
+  }
+  file<<endl;
+
+  file<<"boundary"<<endl;
+  file<<2*ncellsx+2*ncellsy;
+  file<<endl;
+
+  for(int i=0;i<ncellsx;i++){file<<"0 1 "<<i<<" "<<i+1<<endl;}
+  for(int j=0;j<ncellsy;j++){file<<"1 1 "<<(j+1)*nx-1<<" "<<(j+2)*nx-1<<endl;}
+  for(int i=0;i<ncellsx;i++){file<<"2 1 "<<nx*ny-i-1<<" "<<nx*ny-i-2<<endl;}
+  for(int j=0;j<ncellsy;j++){file<<"3 1 "<<nx*(ny-1)-(j*nx)<<" "<<nx*(ny-2)-(j*nx)<<endl;}
+
+  file<<endl;
+  file<<"vertices"<<endl;
+  file<<nx*ny<<endl;
+  file<<"2"<<endl;
+
+  file<<fixed<<setprecision(17);
+
+  for(int j=0,k=0;j<ny;j++){
+    for(int i=0;i<nx;i++,k++){
+      file<<vx[k]<<" "<<vy[k]<<endl;
+    }
+  }
+  file<<endl;
+
+  cout<<"Output(): Done."<<endl;
+
+  return;
+
+}
+
+// old version of output function - RhoLo can't read this !
+
+void Output_old(char* outputfile,Input*I){
+
+  cout<<"Output_old(): Writing input pipeline to meshfile "<<outputfile<<endl;
 
 // write the input pipeline
 
@@ -255,9 +412,30 @@ void Output(char* outputfile,Input*I){
   file<<"# number of mesh dimensions"<<endl;
   file<<I->NDims()<<endl;
 
-  cout<<"Output(): Done."<<endl;
+  cout<<"Output_old(): Done."<<endl;
 
   return;
 
 }
 
+// return user name
+
+string gethost(){
+
+  char*hostname(getenv("HOSTNAME"));
+  string computername;
+
+  if(hostname!=NULL) {
+    computername=hostname;
+    hostname=NULL;
+  }else{
+    hostname=new char[512];
+    if(gethostname(hostname,512)==0){ // success = 0, failure = -1
+      computername=hostname;
+    }
+    delete[]hostname;
+    hostname=NULL;
+  }
+
+  return computername;
+}

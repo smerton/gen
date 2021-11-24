@@ -20,6 +20,7 @@ class Input{
     int NDescriptions(); // returns number of lines in the problem description
     string Description(int i); // returns line i of the problem description
     int Nodes(int idim); // returns the number of nodes along direction idim
+    int NCells();  // returns the number of cells in the mesh
     double XMin(); // returns the mesh extent
     double XMax(); // returns the mesh extent
     double YMin(); // returns the mesh extent
@@ -46,6 +47,7 @@ class Input{
     string mbuffer;  // allows multiple lines with a common keyword
     vector<string> mDescription; // description of the problem
     int mNodes[3];   // number of nodes in each direction
+    int mNCells;   // number of cells in the mesh
     double mXMin;    // mesh extent
     double mXMax;
     double mYMin;
