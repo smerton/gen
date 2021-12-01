@@ -23,7 +23,7 @@ void Output(char* outputfile,Input*I){
 
   ofstream file(outputfile);
 
-  file<<"# MFEM mesh v1.0"<<endl;
+  file<<"MFEM mesh v1.0"<<endl;
   file<<"#"<<endl;
   file<<"#"<<I->Title()<<endl;
 
@@ -129,7 +129,7 @@ void Output(char* outputfile,Input*I){
         }
       }
 
-      file<<mat<<" 3 "<<i1<<" "<<i2<<" "<<i4<<" "<<i3<<" "<<xc[0]<<" "<<endl;
+      file<<mat<<" 3 "<<i1<<" "<<i2<<" "<<i4<<" "<<i3<<" "<<endl;
 
     }
   }
