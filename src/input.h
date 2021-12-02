@@ -38,6 +38,8 @@ class Input{
     double Velocity(int idim,int imat); // returns velocity in direction idim of material imat
     double Range(int idim,int imat); // returns coordinate idim of material imat
     int NDims(); // number of mesh dimensions
+    bool zNoh(); // returns true if mesh distortion is set for Noh problem
+
   private:
 
 // member data
@@ -64,5 +66,6 @@ class Input{
     vector<double> mVelocity[3]; // velocity of material
     vector<double> mRange[6];    // spatial boundary of material
     int mNDims; // number of mesh dimensions
+    bool mzNoh; // adjust mesh for the Noh problem
 
 };

@@ -18,6 +18,7 @@ Input::Input(char* inputfile){
 // read the file
 
   mKeyword.empty();
+  mzNoh=false;
 
   ifstream file(inputfile);
 
@@ -32,6 +33,7 @@ Input::Input(char* inputfile){
     if(mKeyword.compare("Pk")==0){file>>mPk;}
     if(mKeyword.compare("Pt")==0){file>>mPt;}
     if(mKeyword.compare("Ambient")==0){file>>mAmbient;}
+    if(mKeyword.compare("Noh")==0){mzNoh=true;}    
     if(mKeyword.compare("Material")==0){
       int matno;double d,p,u[3],x[2],y[2],z[2];
       file>>matno;mMaterial.push_back(matno);
@@ -115,6 +117,7 @@ Input::Input(char* inputfile){
 //    int Input::NDims(){return mNodes.size_of();} // return number of mesh dimensions
     int Input::NDims(){return 3;} // return number of mesh dimensions
     int Input::NCells(){return mNCells;} // return number of cells in the mesh
+    bool Input::zNoh(){return mzNoh;} // returns true if mesh distortion algorithm for Noh is turned on
 
 // Destructor function to release storage associated with an input class object
 

@@ -88,16 +88,63 @@ void Output(char* outputfile,Input*I){
   int nx(I->Nodes(0)),ny(I->Nodes(1));
   int ncellsx(nx-1),ncellsy(ny-1);
 
+// set up cell widths
+
+  double dx[ncellsx],dy[ncellsy];
+
+// some simluations use a distrorted grid
+
+  if(I->zNoh()){
+    cout<<"Output():: distorting mesh for Noh problem..."<<endl;
+    double xdiv((I->XMax()-I->XMin())/ncellsx),ydiv((I->YMax()-I->YMin())/ncellsy);
+
+    for(int i=0;i<ncellsx;i++){
+      if(i<2*ncellsx/3){
+// high res quadrant
+        dx[i]=3.0/(2*ncellsx);
+      }else{
+        dx[i]=3.0/ncellsx;
+      }
+    }
+
+    for(int j=0;j<ncellsy;j++){
+      if(j>=ncellsy/3){
+// high res quadrant
+        dy[j]=3.0/(2*ncellsx);
+      }else{
+        dy[j]=3.0/ncellsx;
+      }
+    }
+
+    cout<<"Output():: done."<<endl;
+
+  }else{
+
+    for(int i=0;i<ncellsx;i++){dx[i]=(I->XMax()-I->XMin())/ncellsx;}
+    for(int j=0;j<ncellsy;j++){dy[j]=(I->YMax()-I->YMin())/ncellsy;}
+
+  }
+
 // set up vertices
 
-  double vx[nx*ny],vy[nx*ny];
-  double dx((I->XMax()-I->XMin())/ncellsx);
-  double dy((I->YMax()-I->YMin())/ncellsy);
+  double vx[nx*ny];
 
-  for(int j=0,k=0;j<ny;j++){
-    for(int i=0;i<nx;i++,k++){
-      vx[k]=I->XMin()+i*dx;
-      vy[k]=I->YMin()+j*dy;
+  for(long i=0;i<nx*ny;i++){vx[i]=I->XMin();}
+
+  for(long i=0;i<nx;i++){
+    for(long j=0;j<ncellsx;j++){
+      int k(i*nx+j);
+      vx[k+1]=vx[k]+dx[j];
+    }
+  }
+
+  double vy[nx*ny];
+
+  for(long i=0;i<nx*ny;i++){vy[i]=I->YMin();}
+
+  for(long i=0,k=0;i<ncellsy;i++){
+    for(long j=0;j<nx;j++,k++){
+      vy[k+nx]=vy[k]+dy[i];
     }
   }
 
