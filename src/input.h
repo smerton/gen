@@ -39,6 +39,7 @@ class Input{
     double Range(int idim,int imat); // returns coordinate idim of material imat
     int NDims(); // number of mesh dimensions
     bool zNoh(); // returns true if mesh distortion is set for Noh problem
+    bool zSedov(); // returns true if mesh distortion is set for Sedov problem
 
   private:
 
@@ -67,5 +68,6 @@ class Input{
     vector<double> mRange[6];    // spatial boundary of material
     int mNDims; // number of mesh dimensions
     bool mzNoh; // adjust mesh for the Noh problem
+    bool mzSedov; // adjust mesh for the Sedov problem
 
 };

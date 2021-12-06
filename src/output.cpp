@@ -125,6 +125,37 @@ void Output(char* outputfile,Input*I){
 
   }
 
+  if(I->zSedov()){
+    cout<<"Output():: distorting mesh for Sedov problem..."<<endl;
+    double xdiv((I->XMax()-I->XMin())/ncellsx),ydiv((I->YMax()-I->YMin())/ncellsy);
+
+    for(int i=0;i<ncellsx;i++){
+      if(i<2*ncellsx/3){
+// high res quadrant
+        dx[i]=3.0/(2*ncellsx);
+      }else{
+        dx[i]=3.0/ncellsx;
+      }
+    }
+
+    for(int j=0;j<ncellsy;j++){
+      if(j>=ncellsy/3){
+// high res quadrant
+        dy[j]=3.0/(2*ncellsx);
+      }else{
+        dy[j]=3.0/ncellsx;
+      }
+    }
+
+    cout<<"Output():: done."<<endl;
+
+  }else{
+
+    for(int i=0;i<ncellsx;i++){dx[i]=(I->XMax()-I->XMin())/ncellsx;}
+    for(int j=0;j<ncellsy;j++){dy[j]=(I->YMax()-I->YMin())/ncellsy;}
+
+  }
+
 // set up vertices
 
   double vx[nx*ny];
