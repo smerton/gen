@@ -96,23 +96,27 @@ void Output(char* outputfile,Input*I){
 
   if(I->zNoh()){
     cout<<"Output():: distorting mesh for Noh problem..."<<endl;
-    double xdiv((I->XMax()-I->XMin())/ncellsx),ydiv((I->YMax()-I->YMin())/ncellsy);
+
+    double dx1(3*(0.0-I->XMin())/(2*ncellsx)); // high resolution quadrant
+    double dx2(3*(0.0-I->XMin())/(1*ncellsx)); // low resolution quadrant
+    double dy1(3*(0.0-I->YMin())/(2*ncellsy)); // high resolution quadrant
+    double dy2(3*(0.0-I->YMin())/(1*ncellsy)); // low resolution quadrant
 
     for(int i=0;i<ncellsx;i++){
       if(i<2*ncellsx/3){
 // high res quadrant
-        dx[i]=3.0/(2*ncellsx);
+        dx[i]=dx1;
       }else{
-        dx[i]=3.0/ncellsx;
+        dx[i]=dx2;
       }
     }
 
     for(int j=0;j<ncellsy;j++){
       if(j>=ncellsy/3){
 // high res quadrant
-        dy[j]=3.0/(2*ncellsx);
+        dy[j]=dy1;
       }else{
-        dy[j]=3.0/ncellsx;
+        dy[j]=dy2;
       }
     }
 
@@ -127,23 +131,27 @@ void Output(char* outputfile,Input*I){
 
   if(I->zSedov()){
     cout<<"Output():: distorting mesh for Sedov problem..."<<endl;
-    double xdiv((I->XMax()-I->XMin())/ncellsx),ydiv((I->YMax()-I->YMin())/ncellsy);
+
+    double dx1(3*(0.0-I->XMin())/(2*ncellsx)); // high resolution quadrant
+    double dx2(3*(0.0-I->XMin())/(1*ncellsx)); // low resolution quadrant
+    double dy1(3*(0.0-I->YMin())/(2*ncellsy)); // high resolution quadrant
+    double dy2(3*(0.0-I->YMin())/(1*ncellsy)); // low resolution quadrant
 
     for(int i=0;i<ncellsx;i++){
       if(i<2*ncellsx/3){
 // high res quadrant
-        dx[i]=3.0/(2*ncellsx);
+        dx[i]=dx1;
       }else{
-        dx[i]=3.0/ncellsx;
+        dx[i]=dx2;
       }
     }
 
     for(int j=0;j<ncellsy;j++){
       if(j>=ncellsy/3){
 // high res quadrant
-        dy[j]=3.0/(2*ncellsx);
+        dy[j]=dy1;
       }else{
-        dy[j]=3.0/ncellsx;
+        dy[j]=dy2;
       }
     }
 
