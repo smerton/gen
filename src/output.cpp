@@ -170,10 +170,10 @@ void Output(char* outputfile,Input*I){
 
   for(long i=0;i<nx*ny;i++){vx[i]=I->XMin();}
 
-  for(long i=0;i<nx;i++){
-    for(long j=0;j<ncellsx;j++){
-      int k(i*nx+j);
-      vx[k+1]=vx[k]+dx[j];
+  for(long j=0;j<ny;j++){
+    for(long i=0;i<ncellsx;i++){
+      int k(j*nx+i);
+      vx[k+1]=vx[k]+dx[i];
     }
   }
 
@@ -181,9 +181,9 @@ void Output(char* outputfile,Input*I){
 
   for(long i=0;i<nx*ny;i++){vy[i]=I->YMin();}
 
-  for(long i=0,k=0;i<ncellsy;i++){
-    for(long j=0;j<nx;j++,k++){
-      vy[k+nx]=vy[k]+dy[i];
+  for(long i=0,k=0;i<nx;i++){
+    for(long j=0;j<ncellsy;j++,k++){
+      vy[k+nx]=vy[k]+dy[j];
     }
   }
 
@@ -192,8 +192,8 @@ void Output(char* outputfile,Input*I){
   file<<"elements"<<endl;
   file<<I->NCells()<<endl;
 
-  for(int j=0;j<ncellsy;j++){
-    for(int i=0;i<ncellsx;i++){
+  for(int j=0,iel=0;j<ncellsy;j++){
+    for(int i=0;i<ncellsx;i++,iel++){
 
 // corner nodes
 
