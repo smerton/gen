@@ -92,6 +92,9 @@ void Output(char* outputfile,Input*I){
 
   double dx[ncellsx],dy[ncellsy];
 
+  for(int i=0;i<ncellsx;i++){dx[i]=(I->XMax()-I->XMin())/ncellsx;}
+  for(int j=0;j<ncellsy;j++){dy[j]=(I->YMax()-I->YMin())/ncellsy;}
+
 // some simluations use a distrorted grid
 
   if(I->zNoh()){
@@ -121,11 +124,6 @@ void Output(char* outputfile,Input*I){
     }
 
     cout<<"Output():: done."<<endl;
-
-  }else{
-
-    for(int i=0;i<ncellsx;i++){dx[i]=(I->XMax()-I->XMin())/ncellsx;}
-    for(int j=0;j<ncellsy;j++){dy[j]=(I->YMax()-I->YMin())/ncellsy;}
 
   }
 
@@ -157,35 +155,31 @@ void Output(char* outputfile,Input*I){
 
     cout<<"Output():: done."<<endl;
 
-  }else{
-
-    for(int i=0;i<ncellsx;i++){dx[i]=(I->XMax()-I->XMin())/ncellsx;}
-    for(int j=0;j<ncellsy;j++){dy[j]=(I->YMax()-I->YMin())/ncellsy;}
-
   }
 
 // set up vertices
 
-  double vx[nx*ny];
+  double vx[nx*ny],vy[nx*ny];
 
-  for(long i=0;i<nx*ny;i++){vx[i]=I->XMin();}
+  for(long i=0;i<nx*ny;i+=nx){vx[i]=I->XMin();}
+  for(long i=0;i<nx;i++){vy[i]=I->YMin();}
 
   for(long j=0;j<ny;j++){
     for(long i=0;i<ncellsx;i++){
-      int k(j*nx+i);
-      vx[k+1]=vx[k]+dx[i];
+      long k(j*nx+i+1),k0(k-1);
+      vx[k]=vx[k0]+dx[i];
     }
   }
 
-  double vy[nx*ny];
 
-  for(long i=0;i<nx*ny;i++){vy[i]=I->YMin();}
 
-  for(long i=0,k=0;i<nx;i++){
-    for(long j=0;j<ncellsy;j++,k++){
-      vy[k+nx]=vy[k]+dy[j];
+  for(long j=0;j<ncellsy;j++){
+    for(long i=0;i<nx;i++){
+      long k((j+1)*nx+i),k0(k-nx);
+      vy[k]=vy[k0]+dy[j];
     }
   }
+
 
 // write elements block
 
