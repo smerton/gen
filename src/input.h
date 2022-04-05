@@ -40,6 +40,7 @@ class Input{
     int NDims(); // number of mesh dimensions
     bool zNoh(); // returns true if mesh distortion is set for Noh problem
     bool zSedov(); // returns true if mesh distortion is set for Sedov problem
+    bool zSaltzmann(); // returns true if mesh distortion is set for Saltzmann problem
 
   private:
 
@@ -69,5 +70,6 @@ class Input{
     int mNDims; // number of mesh dimensions
     bool mzNoh; // adjust mesh for the Noh problem
     bool mzSedov; // adjust mesh for the Sedov problem
+    bool mzSaltzmann; // adjust mesh for the Saltzmann problem
 
 };

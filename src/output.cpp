@@ -8,7 +8,8 @@
 #include <iomanip>
 #include <ctime>     // date and time
 #include <stdlib.h>  // getenv
-#include <unistd.h> // gethostname
+#include <unistd.h>  // gethostname
+#include <cmath>     // atan
 
 using namespace std;
 
@@ -171,8 +172,6 @@ void Output(char* outputfile,Input*I){
     }
   }
 
-
-
   for(long j=0;j<ncellsy;j++){
     for(long i=0;i<nx;i++){
       long k((j+1)*nx+i),k0(k-nx);
@@ -180,6 +179,41 @@ void Output(char* outputfile,Input*I){
     }
   }
 
+// distort the mesh for Saltzmann, this requires vx[] and vy[] to be set
+
+  if(I->zSaltzmann()){
+    cout<<"Output():: distorting mesh for Saltzmann problem..."<<endl;
+
+// set some tolerances to be used here
+
+    double tol(1.0e-6);
+    double dx1(0.01);
+    double dy1(0.01);
+    double dpi(4.0*atan(1.0));
+
+// perturb the mesh
+
+    for(long i=0;i<nx*ny;i++){
+
+// original node position
+
+        double xorig(vx[i]);
+        double yorig(vy[i]);
+
+// perturbation
+
+        double w1(100.0*xorig+tol);
+        double w2(100.0*yorig+tol);
+
+// set new node position
+
+        vx[i]=w1*dx1+(10.0-w2)*dy1*sin(dpi*w1*0.01);
+
+    }
+
+    cout<<"Output():: done."<<endl;
+
+  }
 
 // write elements block
 

@@ -20,6 +20,7 @@ Input::Input(char* inputfile){
   mKeyword.empty();
   mzNoh=false;
   mzSedov=false;
+  mzSaltzmann=false;
 
   ifstream file(inputfile);
 
@@ -36,6 +37,7 @@ Input::Input(char* inputfile){
     if(mKeyword.compare("Ambient")==0){file>>mAmbient;}
     if(mKeyword.compare("Noh")==0){mzNoh=true;}
     if(mKeyword.compare("Sedov")==0){mzSedov=true;}
+    if(mKeyword.compare("Saltzmann")==0){mzSaltzmann=true;}
     if(mKeyword.compare("Material")==0){
       int matno;double d,p,u[3],x[2],y[2],z[2];
       file>>matno;mMaterial.push_back(matno);
@@ -121,6 +123,7 @@ Input::Input(char* inputfile){
     int Input::NCells(){return mNCells;} // return number of cells in the mesh
     bool Input::zNoh(){return mzNoh;} // returns true if mesh distortion algorithm for Noh is turned on
     bool Input::zSedov(){return mzSedov;} // returns true if mesh distortion algorithm for Sedov is turned on
+    bool Input::zSaltzmann(){return mzSaltzmann;} // returns true if mesh distortion algorithm for Saltzmann is turned on
 
 // Destructor function to release storage associated with an input class object
 
